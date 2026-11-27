@@ -567,7 +567,7 @@ async function startScan(){
 }
 function stopScan(){
   SCAN_STATE.active=false;
-  if(SCAN_STATE.raf) cancelAnimationFrame(SCAN_STATE.raf);
+  if(SCAN_STATE.raf){ (window.cancelAnimationFrame||clearTimeout)(SCAN_STATE.raf) }
   if(SCAN_STATE.stream) SCAN_STATE.stream.getTracks().forEach(t=>t.stop());
   SCAN_STATE.stream=null;
 }
