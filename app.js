@@ -500,9 +500,12 @@ function bindProductForm(isNew, id){
   $('#pfScan').onclick=()=>openScanner(bc=>{ $('#pfBarcode').value=bc; closeSheet() });
   $('#pfSave').onclick=()=>{
     const name=$('#pfName').value.trim(); if(!name) return notify('err','Nama wajib');
+    const bc=$('#pfBarcode').value.trim();
+    const b0=curBiz();
+    if(bc && bizProducts(b0.id).some(p=>p.barcode===bc && p.id!==id && p.active!==false)) return notify('err','Barcode sudah dipakai produk lain');
     const cost=parseInt($('#pfCost').value,10)||0, price=parseInt($('#pfPrice').value,10)||0;
     if(price<cost) notify('err','Harga jual di bawah HPP');
-    const data={name,barcode:$('#pfBarcode').value.trim(),catId:$('#pfCat').value||null,cost,price,minStock:parseInt($('#pfMin').value,10)||0,unit:$('#pfUnit').value};
+    const data={name,barcode:bc,catId:$('#pfCat').value||null,cost,price,minStock:parseInt($('#pfMin').value,10)||0,unit:$('#pfUnit').value};
     if(isNew){
       const nid='pr_'+uid(); const b=curBiz();
       DB.products[nid]={id:nid,bizId:b.id,stock:parseInt($('#pfStock').value,10)||0,expiryTracks:[],active:true,createdAt:Date.now(),uom:data.unit,sellBy:data.unit,...data};
